@@ -1,4 +1,4 @@
 SPOJ
 ====
 
-practise
+practised questions
