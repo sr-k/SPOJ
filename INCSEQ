@@ -1,0 +1,65 @@
+#include<stdio.h>
+#include<string.h>
+#include<algorithm>
+#define MAX 10010
+#define MOD 5000000
+// WITH COMPRESSED RANGE
+using namespace std;
+int dp[MAX],tree[MAX],a[MAX],s[MAX],map[1000010];
+void update(int idx,int val)
+{
+    while(idx<MAX)
+    {
+        tree[idx]+=val;
+        if(tree[idx]>=MOD)tree[idx]-=MOD;
+        idx+=(idx & -idx);
+    }
+}
+int read(int idx)
+{
+    int sum=0;
+    while(idx>0)
+    {
+        sum+=tree[idx];
+        if(sum>=MOD)sum-=MOD;
+        idx-=(idx & -idx);
+    }
+    return sum;
+}
+int main()
+{
+    int i,n,k,j,temp,ans=0,l=2,el;
+    scanf("%d%d",&n,&k);
+    for(i=0;i<n;i++)
+    {
+        scanf("%d",&a[i]);
+        a[i]++;
+        s[i]=a[i];
+        dp[i]=1;
+    }
+    sort(a,a+n);
+    map[a[0]]=l++;
+    for(i=1;i<n;i++)
+    {
+        if(a[i]==a[i-1])map[a[i]]=l-1;
+        else map[a[i]]=l++;
+    }
+    for(j=2;j<=k;j++)
+    {
+        memset(tree,0,sizeof(tree));
+        for(i=0;i<n;i++)
+        {
+            el=map[s[i]];
+            temp=dp[i];
+            dp[i]=read(el-1);
+            update(el,temp);
+        }
+    }
+    for(i=0;i<n;i++)
+    {
+        ans=ans+dp[i];
+        if(ans>=MOD)ans-=MOD;
+    }
+    printf("%d",ans);
+    return 0;
+}
